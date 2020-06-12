@@ -1,0 +1,20 @@
+{
+  "name": "geomonster",
+  "version": "1.0.0",
+  "description": "little game created on semester gamejam 2020 digital edition",
+  "author": "Epsilon_02, crapStone, AmilitancyS, sonority",
+  "license": "MIT",
+  "url": "https://github.com/crapStone/geomonster",
+  "scripts": {
+    "prestart": "mkdir dist; cp -r assets/ dist/",
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html assets/*"
+  },
+  "dependencies": {
+    "pixi.js": "^5.2.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.9.5"
+  }
+}
