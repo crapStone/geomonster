@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Logger from "typescript-logger";
+import IRunnable from "./types/IRunnable";
+
 
 const log = Logger.LoggerManager.create("map");
 
@@ -18,6 +20,8 @@ export default class Map {
     container: PIXI.Container;
 
     eventListener;
+    afterLoadCallbacks: Array<IRunnable> = [];
+    afterLoadCallbacksRun: boolean = false;
 
     constructor(name: string, app: PIXI.Application, resources: Partial<Record<string, PIXI.LoaderResource>>) {
         this.app = app;
@@ -34,6 +38,9 @@ export default class Map {
             for (let key in this.textureMapping) {
                 this.reverseTextureMapping[this.textureMapping[key]] = +key;
             }
+
+            this.afterLoadCallbacksRun = true;
+            this.afterLoadCallbacks.forEach((obj) => obj.run());
 
             this.redraw();
         })
@@ -167,6 +174,15 @@ export default class Map {
         document.body.appendChild(downloadNode);
         downloadNode.click();
         downloadNode.remove();
+    }
+
+    registerAfterLoadCallback(obj: IRunnable) {
+        if (!this.afterLoadCallbacksRun) {
+            this.afterLoadCallbacks.push(obj);
+        }
+        else {
+            obj.run();
+        }
     }
 
     registerListener() {
