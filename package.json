@@ -6,7 +6,7 @@
   "license": "MIT",
   "url": "https://github.com/crapStone/geomonster",
   "scripts": {
-    "prestart": "mkdir dist; cp -r assets/ dist/",
+    "prestart": "mkdir dist; cp -r assets/ dist/  # fuck you parcel",
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html assets/*"
   },

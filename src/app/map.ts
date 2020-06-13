@@ -5,7 +5,7 @@ import IRunnable from "./types/IRunnable";
 
 const log = Logger.LoggerManager.create("map");
 
-const gridSize = 40;
+export const gridSize = 40;
 
 
 export default class Map {
@@ -98,7 +98,7 @@ export default class Map {
     }
 
     appendTextureMappings(textureName: string) {
-        const len = Object.keys(this.textureMapping).length;
+        const len = Object.keys(this.textureMapping).length + 1;
 
         this.textureMapping[len] = textureName;
         this.reverseTextureMapping[textureName] = len;
@@ -121,6 +121,7 @@ export default class Map {
     }
 
     addTile(xPos: number, yPos: number, textureName: string) {
+        log.debug(textureName);
         if (!(textureName in this.reverseTextureMapping)) {
             this.appendTextureMappings(textureName);
         }
