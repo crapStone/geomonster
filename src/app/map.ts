@@ -3,97 +3,224 @@ import * as Logger from "typescript-logger";
 
 const log = Logger.LoggerManager.create("map");
 
+const gridSize = 40;
+
 
 export default class Map {
-    mapData: string | any[];
-    textureMapping: { [x: number]: string; };
+    mapData: Array<Array<number>>;
+    textureMapping: { [id: number]: string | undefined };
+    reverseTextureMapping: { [name: string]: number };
     properties: { background: string; };
 
-    app: { stage: { addChild: (arg0: any) => void; }; };
+    app;
     resources: { [x: string]: { texture: PIXI.Texture; }; };
 
     container: PIXI.Container;
 
+    eventListener;
+
     constructor(name: string, app: PIXI.Application, resources: Partial<Record<string, PIXI.LoaderResource>>) {
         this.app = app;
         this.resources = resources;
-
-        this.container = new PIXI.Container();
-        this.container.scale = new PIXI.Point(1, 1);
 
         import(`../../assets/mapTest.json`).then((result) => {
             log.debug("loaded map");
 
             this.mapData = result.data;
             this.textureMapping = result.textureMapping;
+            this.reverseTextureMapping = {};
             this.properties = result.properties;
 
-            this.create();
+            for (let key in this.textureMapping) {
+                this.reverseTextureMapping[this.textureMapping[key]] = +key;
+            }
+
+            this.redraw();
         })
     }
 
+    redraw() {
+        log.debug("redraw");
+
+        let oldScale;
+        let oldPos;
+
+        if (this.container) {
+            oldScale = this.container.scale;
+            oldPos = this.container.position;
+
+            this.app.stage.removeChild(this.container);
+        }
+        else {
+            oldScale = new PIXI.Point(1, 1);
+            oldPos = new PIXI.Point();
+        }
+
+        this.container = new PIXI.Container();
+        this.container.position.set(oldPos.x, oldPos.y);
+        this.container.scale = new PIXI.Point(oldScale.x, oldScale.y);
+
+        this.create();
+    }
+
     create() {
-        const size = 40;
+        log.debug("create");
+        const size = gridSize;
 
         for (let y = 0; y < this.mapData.length; y++) {
             for (let x = 0; x < this.mapData[y].length; x++) {
                 const textureId = this.mapData[y][x];
 
-                let sprite = new PIXI.Sprite(this.resources[this.textureMapping[textureId]].texture);
+                const textureName = this.textureMapping[textureId];
 
-                sprite.height = size;
-                sprite.width = size;
+                if (textureName) {
+                    let sprite = new PIXI.Sprite(this.resources[textureName].texture);
 
-                sprite.x = x * size;
-                sprite.y = y * size;
+                    sprite.height = size;
+                    sprite.width = size;
 
-                this.container.addChild(sprite);
+                    sprite.x = x * size;
+                    sprite.y = y * size;
+
+                    this.container.addChild(sprite);
+                }
             }
         }
 
         this.app.stage.addChild(this.container);
-        // this.app.ticker.add(this.render);
-        window.addEventListener("keydown", this.keyEventHandler.bind(this));
+    }
+
+    appendTextureMappings(textureName: string) {
+        const len = Object.keys(this.textureMapping).length;
+
+        this.textureMapping[len] = textureName;
+        this.reverseTextureMapping[textureName] = len;
+    }
+
+    fillMapIfNeeded(xPos: number, yPos: number) {
+        if (this.mapData.length <= yPos) {
+            for (let y = this.mapData.length; y <= yPos; y++) {
+                this.mapData.push([]);
+            }
+        }
+
+        const yMapData = this.mapData[yPos];
+
+        if (yMapData.length <= xPos) {
+            for (let x = yMapData.length; x < xPos; x++) {
+                yMapData.push(0);
+            }
+        }
+    }
+
+    addTile(xPos: number, yPos: number, textureName: string) {
+        if (!(textureName in this.reverseTextureMapping)) {
+            this.appendTextureMappings(textureName);
+        }
+
+        this.fillMapIfNeeded(xPos, yPos);
+
+        this.mapData[yPos][xPos] = this.reverseTextureMapping[textureName] as number;
+    }
+
+    addTiles(xStart, yStart, xEnd, yEnd, textureName) {
+        if (!(textureName in this.reverseTextureMapping)) {
+            this.appendTextureMappings(textureName);
+        }
+
+        for (let yPos = yStart; yPos < yEnd; yPos++) {
+            this.fillMapIfNeeded(xEnd, yPos);
+
+            for (let xPos = xStart; xPos < xEnd; xPos++) {
+                this.mapData[yPos][xPos] = this.reverseTextureMapping[textureName] as number; 
+            }
+        }
+    }
+
+    saveMap() {
+        log.debug("saveMap");
+
+        const toSerialize = {
+            textureMapping: this.textureMapping,
+            properties: this.properties,
+            data: this.mapData,
+        };
+
+        const json = JSON.stringify(toSerialize);
+
+        let dataStr = "data:text/json;charset=uft-8," + encodeURIComponent(json);
+        let downloadNode = document.createElement('a');
+        downloadNode.setAttribute("href", dataStr);
+        downloadNode.setAttribute("download", "map.json");
+        document.body.appendChild(downloadNode);
+        downloadNode.click();
+        downloadNode.remove();
+    }
+
+    registerListener() {
+        this.eventListener = this.keyEventHandler.bind(this);
+        window.addEventListener("keydown", this.eventListener);
+    }
+
+    unregisterListener() {
+        window.removeEventListener("keydown", this.eventListener);
     }
 
     keyEventHandler(evt: { key: string; preventDefault: () => void; }) {
-        let x = this.container.x;
-        let y = this.container.y;
+        let x = 0;
+        let y = 0;
 
-        let sx = this.container.scale.x;
-        let sy = this.container.scale.y;
+        let sx = 0;
+        let sy = 0;
+
+        let changed = false;
 
         if (evt.key === "ArrowDown") {
-            log.debug("ArrowDown");
+            changed = true;
             y += 10;
         }
         if (evt.key === "ArrowUp") {
-            log.debug("ArrowUp");
+            changed = true;
             y -= 10;
         }
         if (evt.key === "ArrowLeft") {
-            log.debug("ArrowLeft");
+            changed = true;
             x -= 10;
         }
         if (evt.key === "ArrowRight") {
-            log.debug("ArrowRight");
+            changed = true;
             x += 10;
         }
 
         if (evt.key === "w") {
-            log.debug("zoom in");
+            changed = true;
             sx += .1;
             sy += .1;
         }
         if (evt.key === "q") {
-            log.debug("zoom out");
+            changed = true;
             sx -= .1;
             sy -= .1;
         }
+        if (evt.key === "a") {
+            this.addTiles(45, 45, 50, 50, "tile1");
+            this.redraw();
+        }
+        if (evt.key === "s") {
+            this.saveMap();
+        }
 
-        this.container.position.set(x, y);
-        this.container.scale.set(sx, sy);
+        if (changed) {
+            const newX = this.container.x + x;
+            const newY = this.container.y + y;
 
-        evt.preventDefault();
+            const newSX = this.container.scale.x + sx;
+            const newSY = this.container.scale.y + sy;
+
+            this.container.position.set(newX, newY);
+            this.container.scale.set(newSX, newSY);
+
+            evt.preventDefault();
+        }
     }
 }

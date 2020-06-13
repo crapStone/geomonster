@@ -26,6 +26,7 @@ app.loader
         // app.stage.addChild(monster.sprite);
 
         let map = new Map("", app, resources);
+        map.registerListener();
 
         startLoop(app, animations);
 
