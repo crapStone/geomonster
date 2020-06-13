@@ -4,6 +4,7 @@ import registerAssetLoader from "./assetLoader";
 import startLoop from "./gameLoop";
 import IAnimated from "./types/IAnimated";
 import Monster from './monster';
+import Map from "./map";
 
 const log = Logger.LoggerManager.create("index");
 
@@ -20,9 +21,13 @@ let animations: Array<IAnimated> = [];
 
 app.loader
     .load((_, resources) => {
-        let monster = new Monster(app, resources);
-        animations.push(monster);
-        app.stage.addChild(monster.sprite);
+        // let monster = new Monster(app, resources);
+        // animations.push(monster);
+        // app.stage.addChild(monster.sprite);
+
+        let map = new Map("", app, resources);
 
         startLoop(app, animations);
+
+        // renderMap(app, resources);
     });

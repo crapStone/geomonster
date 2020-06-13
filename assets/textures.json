@@ -1,3 +1,7 @@
 {
-    "monster": "../../assets/monster.png"
+    "monster": "../../assets/monster.png",
+    "tile1": "../../assets/tile1.png",
+    "tile2": "../../assets/tile2.png",
+    "tile3": "../../assets/tile3.png",
+    "tile4": "../../assets/tile4.png"
 }
