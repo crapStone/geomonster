@@ -124,15 +124,27 @@ export default class Map {
     }
 
     addTiles(xStart, yStart, xEnd, yEnd, textureName) {
+        if (xStart > xEnd) {
+            const tmp = xStart;
+            xStart = xEnd;
+            xEnd = tmp;
+        }
+
+        if (yStart > yEnd) {
+            const tmp = yStart;
+            yStart = yEnd;
+            yEnd = tmp;
+        }
+
         if (!(textureName in this.reverseTextureMapping)) {
             this.appendTextureMappings(textureName);
         }
 
-        for (let yPos = yStart; yPos < yEnd; yPos++) {
+        for (let yPos = yStart; yPos <= yEnd; yPos++) {
             this.fillMapIfNeeded(xEnd, yPos);
 
-            for (let xPos = xStart; xPos < xEnd; xPos++) {
-                this.mapData[yPos][xPos] = this.reverseTextureMapping[textureName] as number; 
+            for (let xPos = xStart; xPos <= xEnd; xPos++) {
+                this.mapData[yPos][xPos] = this.reverseTextureMapping[textureName] as number;
             }
         }
     }
@@ -203,7 +215,7 @@ export default class Map {
             sy -= .1;
         }
         if (evt.key === "a") {
-            this.addTiles(45, 45, 50, 50, "tile1");
+            this.addTiles(0, 9, 0, 0, "tile4");
             this.redraw();
         }
         if (evt.key === "s") {
