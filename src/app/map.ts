@@ -121,7 +121,6 @@ export default class Map {
     }
 
     addTile(xPos: number, yPos: number, textureName: string) {
-        log.debug(textureName);
         if (!(textureName in this.reverseTextureMapping)) {
             this.appendTextureMappings(textureName);
         }
