@@ -1,23 +1,28 @@
 import * as PIXI from 'pixi.js';
-// import * as url from './resources/monster.png';
+import * as Logger from "typescript-logger";
+import registerAssetLoader from "./assetLoader";
+import startLoop from "./gameLoop";
+import IAnimated from "./types/IAnimated";
+import Monster from './monster';
 
-const app = new PIXI.Application();
+const log = Logger.LoggerManager.create("index");
+
+const app = new PIXI.Application({
+    width: 1080,  //window.innerWidth,
+    height: 720,  //window.innerHeight,
+});
 
 document.body.appendChild(app.view);
 
-app.loader.add('monster', '../../assets/monster.png').load((_, resources) => {
-    const monster = new PIXI.Sprite(resources.monster.texture);
-    console.log(resources.monster.texture);
+registerAssetLoader(app);
 
-    monster.x = app.renderer.width / 2;
-    monster.y = app.renderer.height / 2;
+let animations: Array<IAnimated> = [];
 
-    monster.anchor.x = .5;
-    monster.anchor.y = .5;
+app.loader
+    .load((_, resources) => {
+        let monster = new Monster(app, resources);
+        animations.push(monster);
+        app.stage.addChild(monster.sprite);
 
-    app.stage.addChild(monster);
-
-    app.ticker.add(() => {
-        monster.rotation += .001;
+        startLoop(app, animations);
     });
-});
