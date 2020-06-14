@@ -12,6 +12,7 @@ const gravity = true;
 export default class Monster implements IAnimated {
     leftTexture;
     rightTexture;
+    xAnchorOffset;
     sprite: PIXI.Sprite;
     container: PIXI.Container;
     acceleration: PIXI.Point;
@@ -44,7 +45,8 @@ export default class Monster implements IAnimated {
         this.velocity = new PIXI.Point();
         this.mapOffset = new PIXI.Point(this.sprite.position.x, this.sprite.position.y);
 
-        this.sprite.anchor.x = .5;
+        this.xAnchorOffset = .25;
+        this.sprite.anchor.x = 1 - this.xAnchorOffset;
         this.sprite.anchor.y = 1;
 
         this.container = new PIXI.Container();
@@ -75,9 +77,11 @@ export default class Monster implements IAnimated {
 
         if (this.velocity.x > 0) {
             this.sprite.texture = this.leftTexture;
+            this.sprite.anchor.x = this.xAnchorOffset;
         }
         else if (this.velocity.x < 0) {
             this.sprite.texture = this.rightTexture;
+            this.sprite.anchor.x = 1 - this.xAnchorOffset;
         }
 
         this.runPhysics(delta);
