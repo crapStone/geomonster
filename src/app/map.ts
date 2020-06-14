@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Logger from "typescript-logger";
 import IRunnable from "./types/IRunnable";
+import { rectIntersect } from './collision';
 
 
 const log = Logger.LoggerManager.create("map");
@@ -183,6 +184,30 @@ export default class Map {
         document.body.appendChild(downloadNode);
         downloadNode.click();
         downloadNode.remove();
+    }
+
+    collidesWithMap(x: number, y: number, w: number, h: number) {
+        const maxOffset = 3;
+        // console.log("collision check", x, y, w, h);
+        const xIdx = Math.floor(x / 40);
+        const yIdx = Math.floor(y / 40);
+        // console.log("new", xIdx, yIdx);
+
+        for (let row = Math.max(0, yIdx - maxOffset); row < Math.min(this.mapData.length, yIdx + maxOffset); row++) {
+            const rowTiles = this.mapData[row];
+
+            if (rowTiles) {
+                for (let tile = Math.max(0, xIdx - maxOffset); tile < Math.min(rowTiles.length, xIdx + maxOffset); tile++) {
+                    const tileData = rowTiles[tile];
+                    if (tileData) {
+                        if (rectIntersect(x, y, w, h, tile * 40, row * 40, 40, 40)) {
+                            return { x: tile * 40, y: row * 40, w: 40, h: 40 };
+                        };
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     registerAfterLoadCallback(obj: IRunnable) {

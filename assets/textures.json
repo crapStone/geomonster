@@ -42,5 +42,8 @@
 
     "black": "../../assets/black.png",
 
-    "monsterBodySide": "../../assets/monster/Body_Side.png"
+    "monsterBodySide": "../../assets/monster/Body_Side.png",
+
+    "sign": "../../assets/sign.png",
+    "music_background": "../../assets/background.mp3"
 }

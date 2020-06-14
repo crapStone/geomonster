@@ -11,6 +11,7 @@
     "build": "parcel build src/index.html assets/*"
   },
   "dependencies": {
+    "pixi-sound": "^3.0.4",
     "pixi.js": "^5.2.4",
     "typescript-logger": "^2.0.1"
   },
