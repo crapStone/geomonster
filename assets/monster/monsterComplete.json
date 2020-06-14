@@ -1,0 +1,28 @@
+{"frames": {
+
+"monsterCompleteLeft.png":
+{
+	"frame": {"x":0,"y":0,"w":108,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":108,"h":128},
+	"sourceSize": {"w":108,"h":128}
+},
+"monsterCompleteRight.png":
+{
+	"frame": {"x":108,"y":0,"w":110,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":128},
+	"sourceSize": {"w":110,"h":128}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "monsterComplete.png",
+	"format": "RGBA8888",
+	"size": {"w":218,"h":128},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cbdbd5396bd353100fd204d16bd1cdbc:77b7c7039540e9fb098cee129c36ce56:db93ff67bb8b94822e4b8a8ae12b285d$"
+}
+}
