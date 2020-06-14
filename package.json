@@ -8,7 +8,7 @@
   "scripts": {
     "prestart": "mkdir dist; cp -r assets/ dist/  # fuck you parcel",
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html assets/*"
+    "build": "parcel build src/index.html # assets/*"
   },
   "dependencies": {
     "pixi-sound": "^3.0.4",

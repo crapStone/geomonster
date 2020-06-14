@@ -1,10 +1,7 @@
 import * as PIXI from 'pixi.js';
-import * as Logger from "typescript-logger";
 import IRunnable from "./types/IRunnable";
 import { rectIntersect } from './collision';
 
-
-const log = Logger.LoggerManager.create("map");
 
 export const gridSize = 40;
 
@@ -30,7 +27,7 @@ export default class Map {
         this.resources = resources;
 
         import(`../../assets/mapTest.json`).then((result) => {
-            log.debug("loaded map");
+            console.log("loaded map");
 
             this.mapData = result.data;
             this.textureMapping = result.textureMapping;
@@ -50,7 +47,7 @@ export default class Map {
     }
 
     redraw() {
-        log.debug("redraw");
+        console.log("redraw");
 
         let oldScale;
         let oldPos;
@@ -74,7 +71,7 @@ export default class Map {
     }
 
     create() {
-        log.debug("create");
+        console.log("create");
         const size = gridSize;
 
         for (let y = 0; y < this.mapData.length; y++) {
@@ -167,7 +164,7 @@ export default class Map {
     }
 
     saveMap() {
-        log.debug("saveMap");
+        console.log("saveMap");
 
         const toSerialize = {
             textureMapping: this.textureMapping,

@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import * as Logger from "typescript-logger";
 // import AnimatedPlayer from './animatedPlayer';
 import registerAssetLoader from "./assetLoader";
 import MapEditor from './editor';
@@ -9,8 +8,6 @@ import TileSelector from './tileSelector';
 import IAnimated from "./types/IAnimated";
 import SoundPlayer from "./sound";
 import Monster from './monster';
-
-const log = Logger.LoggerManager.create("index");
 
 const app = new PIXI.Application({
     width: window.innerWidth,

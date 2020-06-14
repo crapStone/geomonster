@@ -1,9 +1,6 @@
 import * as PIXI from 'pixi.js';
 import IAnimated from "./types/IAnimated";
 import Map from './map';
-import * as Logger from 'typescript-logger';
-
-const log = Logger.LoggerManager.create("monster");
 
 const g = 2.8;
 
@@ -167,7 +164,7 @@ export default class Monster implements IAnimated {
         }
 
         if (evt.key === "a") {
-            log.debug("collision", this.checkCollision());
+            console.log("collision", this.checkCollision());
         }
 
 
