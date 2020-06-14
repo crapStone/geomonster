@@ -25,7 +25,6 @@ export default class TileSelector implements IRunnable {
         for (const key in this.map.textureMapping) {
             if (key !== 'default') {
                 const textureName = this.map.textureMapping[key];
-                console.log(textureName);
                 let sprite = new PIXI.Sprite(this.app.loader.resources[textureName].texture);
                 sprite.interactive = true;
                 sprite.buttonMode = true;

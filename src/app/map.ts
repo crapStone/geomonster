@@ -13,6 +13,7 @@ export default class Map {
     textureMapping: { [id: number]: string | undefined };
     reverseTextureMapping: { [name: string]: number };
     properties: { background: string; };
+    textureOffset;
 
     app;
     resources: { [x: string]: { texture: PIXI.Texture; }; };
@@ -34,6 +35,7 @@ export default class Map {
             this.textureMapping = result.textureMapping;
             this.reverseTextureMapping = {};
             this.properties = result.properties;
+            this.textureOffset = result.textureOffset;
 
             for (let key in this.textureMapping) {
                 this.reverseTextureMapping[this.textureMapping[key]] = +key;
@@ -88,6 +90,13 @@ export default class Map {
 
                     sprite.x = x * size;
                     sprite.y = y * size;
+
+                    if (textureId in this.textureOffset) {
+                        sprite.anchor.y = this.textureOffset[textureId].anchorY;
+                        sprite.anchor.x = this.textureOffset[textureId].anchorX;
+                        sprite.height = size + this.textureOffset[textureId].heightOffset;
+                        sprite.rotation = this.textureOffset[textureId].rotation;
+                    }
 
                     this.container.addChild(sprite);
                 }
