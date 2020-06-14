@@ -34,6 +34,9 @@ export default class Monster implements IAnimated {
         this.sprite.x = app.renderer.width / 2;
         this.sprite.y = app.renderer.height / 2;
 
+        this.map.container.x = this.sprite.x - 80;
+        this.map.container.y = this.sprite.y - 5 * 40;
+
         this.sprite.width = 50;
         this.sprite.height = 60;
 

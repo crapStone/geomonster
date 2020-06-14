@@ -19,7 +19,7 @@ export default class Map {
     app;
     resources: { [x: string]: { texture: PIXI.Texture; }; };
 
-    container: PIXI.Container;
+    container: PIXI.Container = new PIXI.Container();
 
     eventListener;
     afterLoadCallbacks: Array<IRunnable> = [];
